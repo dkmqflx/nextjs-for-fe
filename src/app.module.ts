@@ -2,16 +2,21 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostModule } from './post/post.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-// 모듈이란 컨트롤러, 서비스, 모듈 등을 모아둔 파일
 @Module({
   imports: [
-    // TypeOrmModule.forRoot({
-    //   type: 'sqlite',
-    //   database: 'database.sqlite',
-    //   entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    //   synchronize: true,
-    // }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT!, 10) || 5432,
+      username: process.env.DB_USERNAME || 'test',
+      password: process.env.DB_PASSWORD || 'test',
+      database: process.env.DB_DATABASE || 'inflearn',
+
+      autoLoadEntities: true, // 모든 엔티티를 자동으로 로드
+      synchronize: true, // nestjs 앱이 시작될 때 데이터베이스 스키마를 동기화, 개발 환경에서만 사용
+    }),
     PostModule,
   ],
   controllers: [AppController],
