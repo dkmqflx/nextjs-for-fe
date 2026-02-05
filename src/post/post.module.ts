@@ -2,15 +2,18 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
-import { PostRepository } from './post.repository';
 import { Post } from './post.entity';
 
 // Post와 관련된 기능(컨트롤러, 서비스, 레포지토리 등)을 하나로 묶어주는 모듈
 // NestJS는 이 모듈 정보를 보고 DI 컨테이너를 구성하고, 필요한 곳에 의존성을 주입해 준다.
 @Module({
-  // imports: [TypeOrmModule.forFeature([Post])], // 이 모듈에서 Post 엔티티용 TypeORM 리포지토리를 사용할 때 등록
+  imports: [TypeOrmModule.forFeature([Post])],
+  // 이 모듈 안에서 Post 엔티티에 대한 TypeORM Repository<Post>를 DI로 주입받을 수 있게 등록
+  // 즉, TypeOrmModule.forFeature([Post]) 덕분에
+  // PostService 등에서 @InjectRepository(Post) private postRepository: Repository<Post> 를 DI로 받을 수 있다.
+
   controllers: [PostController], // HTTP 요청을 받고 라우팅을 담당하는 컨트롤러 목록
-  providers: [PostService, PostRepository], // DI 컨테이너에 등록할 서비스/레포지토리 등(주입 가능한 클래스) 목록
+  providers: [PostService], // DI 컨테이너에 등록할 서비스/레포지토리 등(주입 가능한 클래스) 목록
 })
 export class PostModule {}
 

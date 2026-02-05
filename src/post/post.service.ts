@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post } from './post.entity';
-import { PostRepository } from './post.repository';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
+  // TypeORM이 Post 엔티티용 Repository<Post> 인스턴스를 생성해 두고,
+  // @InjectRepository(Post)를 통해 이 생성자에 주입해 주므로 this.postRepository로 DB CRUD 작업을 수행할 수 있다.
+  constructor(
+    @InjectRepository(Post)
+    private postRepository: Repository<Post>,
+  ) {}
 
   async findAll(): Promise<Post[]> {
     return this.postRepository.find();
