@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  CreateDateColumn,
+} from 'typeorm';
 
 // DB 인덱스란 데이터베이스에서 특정 데이터에 접근을 빨리 하거나, 어떤 데이터베이스 테이블에 특정 조건을 넣을 때 사용된다
 @Entity()
@@ -28,4 +34,12 @@ export class Post {
     nullable: false,
   })
   authorId: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 }
