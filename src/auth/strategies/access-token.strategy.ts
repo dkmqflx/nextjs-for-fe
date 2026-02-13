@@ -37,3 +37,27 @@ export class AccessTokenStrategy extends PassportStrategy(
     return payload;
   }
 }
+
+/**
+ * getTokens 메소드를 보면, sub(Subject)와 username을 페이로드에 담아 토큰을 생성하는 것을 알 수 있습니다.
+ * validate 메서드에서는 이 페이로드를 그대로 반환하고 있습니다.
+ * 따라서, 인증이 성공한 후에 req.user 객체에는 이 페이로드가 담기게 됩니다.
+ * 
+ *  전체 흐름:
+
+  1. 요청이 들어옴 (예: Authorization: Bearer eyJhbGc...)
+  2. Passport가 자동으로 실행하는 과정:
+  ① jwtFromRequest로 토큰 추출
+  → "eyJhbGc..." 문자열을 헤더에서 뽑아냄
+
+  ② secretOrKey로 JWT 검증
+   → JWT 서명이 유효한지 확인 (실패하면 401 에러)
+
+  ③ 검증 성공하면 JWT를 디코딩
+     → JWT는 "Header.Payload.Signature" 구조
+     → Payload 부분을 디코딩하면: { sub: "123", username: "john" }
+
+  ④ 디코딩된 payload를 validate() 메서드에 자동으로 전달
+     → validate(payload) 호출됨!
+  3. validate가 반환한 값이 req.user에 저장됨
+ */
