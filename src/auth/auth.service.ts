@@ -140,10 +140,12 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       // signAsync -> 새로운 JWT 토큰 생성
       this.jwtService.signAsync(
+        // 첫번째 -> payload
         {
           sub: user.id, // subject, 토큰의 주체
           username: user.username, // 나중에 컨트롤러 같은 데서 편하게 쓰려고
         },
+        // 두번째 -> configuration
         {
           secret: this.configService.get('JWT_ACCESS_SECRET'), // 시크릿키
           expiresIn: '15m',
