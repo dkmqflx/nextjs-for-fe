@@ -64,6 +64,38 @@ export class AuthService {
   async signOut(userId: string) {
     await this.usersService.update(userId, {
       refreshToken: null,
+      /**
+       *  undefined vs null - TypeORM의 동작 방식: 
+       *  현재 DB 상태:                                                                          
+       *  User { id: "123", refreshToken: "abc123xyz" }  // 로그인 상태
+
+       *  undefined 사용 시:
+        await this.usersService.update(userId, {
+        refreshToken: undefined,
+      });
+
+      * TypeORM의 동작:
+      *  - undefined 필드는 SQL 쿼리에서 아예 제외됨
+      *  - 실제 SQL: UPDATE users SET ... WHERE id = '123' (refreshToken을 건드리지 않음)
+      *  - 결과: DB에 refreshToken: "abc123xyz" 그대로 남아있음! ❌
+
+       *  null 사용 시:
+
+    await this.usersService.update(userId, {
+      refreshToken: null,
+    });
+
+       *  TypeORM의 동작:
+      *  - null은 명시적으로 SQL에 포함됨
+      *  - 실제 SQL: UPDATE users SET refreshToken = NULL WHERE id = '123'
+      *  - 결과: DB에 refreshToken: null 저장됨! ✅
+
+      보안 문제:
+
+      로그아웃 후:
+      - undefined 사용 → DB에 토큰 남음 → 탈취된 토큰으로 계속 접근 가능 🚨
+      - null 사용 → DB에서 토큰 제거 → 토큰 갱신 불가능 ✅
+       */
     });
   }
 

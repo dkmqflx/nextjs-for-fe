@@ -34,7 +34,7 @@ export class User {
     length: 255,
     nullable: true,
   })
-  refreshToken?: string;
+  refreshToken?: string | null;
   /**
    * 리프레시토큰을 DB에 저장하는 이유
    * 액세스토큰은 짧은 수명을 가지므로, 만료되면 사용자는 다시 로그인을 해야 합니다.

@@ -22,7 +22,7 @@ export class AccessTokenStrategy extends PassportStrategy(
     // super 호출 시, PassportStrategy의 constructor를 호출하게 된다
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // 요청 헤더에서 JWT 추출 -> Bearer xxxxx에서 xxxxx만 추출하는 로직을 Passport가 대신 수행하는 것입니다.
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'), // 이렇게만 해도 JWT의 유효성 검증이 자동으로 수행됩니다.
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET')!, // 이렇게만 해도 JWT의 유효성 검증이 자동으로 수행됩니다.
       /**
        * JWT는 Header.Payload.Signature로 구성되는데,
        * Passport 엔진은 전달받은 토큰의 Header와 Payload를 서버의 Secret Key로 직접 다시 암호화해 봅니다.

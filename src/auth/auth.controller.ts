@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
 
 @Controller('auth')
@@ -24,15 +24,15 @@ export class AuthController {
   @UseGuards(AccessTokenGuard)
   @Get('signout')
   signOut(@Req() req: Request) {
-    const userId = req.user['sub'];
-    this.authService.signOut(userId);
+    const userId = req.user!.sub;
+    return this.authService.signOut(userId);
   }
 
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   refreshAllTokens(@Req() req: Request) {
-    const userId = req.user['sub'];
-    const refreshToken = req.user['refreshToken'];
+    const userId = req.user!.sub; //  Non-null assertion (!)을 사용한 이유는 Guard를 통과했다면 req.user가 반드시 존재하기 때문에 안전합니다.
+    const refreshToken = req.user!.refreshToken!;
 
     return this.authService.refreshAllTokens(userId, refreshToken);
   }
